@@ -8,7 +8,7 @@ class HashTable(object):
                             641, 1279, 2557, 5119, 10243, 
                             20479, 40961, 81919, 163841, 327673]
     
-        self.items = 0                                             # Elements on hashTable 
+        self.items = 0                                             # Elements in hashTable 
 
         self.thumb_prime = 0 
         self.capacity = self.list_primes[self.thumb_prime]         # Actual size of HashTable
@@ -72,7 +72,7 @@ class HashTable(object):
                 self.put(tmpKeys[i], tmpVals[i])
 
     def get(self, key):
-        """ returns the value associate with the key """
+        """ returns the value associated with the key """
         hash = self.get_hash(key)
         index = -1
 
@@ -85,7 +85,7 @@ class HashTable(object):
         return None
 
     def delete(self,key):
-        """ Deletes this entry based on i.d. key"""
+        """ Deletes this entry based on i.d./key"""
         if not self.contains(key):
             return False
         
@@ -113,7 +113,7 @@ class HashTable(object):
         return self.items
     
     def contains(self, key):
-        """ Does this hashTable exist? """
+        """ Does this key exist in the hashtable? """
         hash = self.get_hash(key)
         index = -1
 
