@@ -4,11 +4,12 @@ class HashTable(object):
         Ana-Lea N; CSCI 361; 11/22/2020; For Extra Credit; Edited 1/7/2020
     """
     list_primes = [11, 19, 41, 79, 163, 317, 
-                   641, 1279]
+                   641, 1279, 2557, 5119, 10243, 
+                   20479, 40961, 81919, 163841, 327673]
     load_facor_indicator = 0.5
     
 
-    def __init__(self, str = "", allow_overfill = False):
+    def __init__(self, allow_overfill = False):
         # Elements currently in hashTable 
         self.items = 0 
 
