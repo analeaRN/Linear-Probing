@@ -90,10 +90,12 @@ def main(argv):
     #read file, init hashTabe
     fill_from_string(word_counter, read_data)
 
-    #Welcolme Messages
+    #Welcome Messages
     print(f"This text contains {word_counter.size()} distinct words.")
+    if word_counter.loss_of_data:
+        print("Maximum amount of words added to dictionary inserted via file has been reached. There may have been a loss of words while entering data... Proceed with caution.")
     user_said = input("Please enter a word to get its frequency, or hit enter to leave.\n").strip().lower()
-
+    
     #scan user input
     while user_said != "":
         user_said = input(f"{check_word(word_counter, user_said)}\n").strip().lower()

@@ -1,39 +1,55 @@
 class HashTable(object):
     """ Linear Probing implmentation of the abstract data type HashTable
     
-        Ana-Lea N; CSCI 361; 11/22/2020; For Extra Credit
+        Ana-Lea N; CSCI 361; 11/22/2020; For Extra Credit; Edited 1/7/2020
     """
-    def __init__(self):
-        self.list_primes = [11, 19, 41, 79, 163, 317, 
-                            641, 1279, 2557, 5119, 10243, 
-                            20479, 40961, 81919, 163841, 327673]
+    list_primes = [11, 19, 41, 79, 163, 317, 
+                   641, 1279]
+    load_facor_indicator = 0.5
     
-        self.items = 0                                             # Elements in hashTable 
 
+    def __init__(self, str = "", allow_overfill = False):
+        # Elements currently in hashTable 
+        self.items = 0 
+
+        # current index for list_primes regarding hashtable's size
         self.thumb_prime = 0 
-        self.capacity = self.list_primes[self.thumb_prime]         # Actual size of HashTable
-
-        self.load_facor_indicator = 0.5
+        
+        # Actual size (capacity) of the hashtable's key, value, and vaild arrays
+        self.capacity = self.list_primes[self.thumb_prime]         
 
         self.values = [None for i in range(self.capacity)]
         self.keys =   [None for i in range(self.capacity)]
         self.valid =  [False for i in range(self.capacity)]
+
+        # Flags
+        self.loss_of_data = False # if the table has been filled and elements have been inserted
+                                  # then true
+        self.allow_overfill = allow_overfill  # keep False if you want to not raise 
+                                              # exceptions when table is at full capacity
     
     def put(self, key, value):
-        """ inseart key value pair into this hashTable. """
+        """ insert key value pair into this hash table. """
         if self.need_to_reload():
             self.resize()
-        
+
         hash = self.get_hash(key)
+
         index = -1
         for i in range(hash, (self.capacity + hash)):
             index = ((i) % self.capacity)
-            if (self.valid[index] == False):
+            if self.valid[index] is False:
                 break
             elif (self.keys[index] == key):
                 self.values[index] = value
                 return
-            
+        else:
+            # when the hash table is completely filled
+            if self.allow_overfill:
+                raise RuntimeError
+            self.loss_of_data = True    
+            return
+        
         self.keys[index] = key
         self.values[index] = value
         self.valid[index] = True
@@ -48,16 +64,19 @@ class HashTable(object):
         return ((hash(key) & 0x7fffffff) % self.capacity)
 
     def resize(self):
-        """ resize all array, adding all old key values to the new bigger home """
+        """ 
+        resize all arrays, adding all old key values to the new bigger home 
+        arrays are capped to stop growing at list_primes[-1].
+        """
         if self.thumb_prime >= len(self.list_primes) - 1:
-            return # cannot resize; no more room
+            return  # cannot resize; no more room
         
-        #save old values
+        # save old values
         tmpKeys =  self.keys
         tmpVals =  self.values
         tmpValid = self.values
 
-        #init new bigger arrays
+        # init new bigger arrays
         self.thumb_prime = self.thumb_prime + 1
         self.capacity = self.list_primes[self.thumb_prime]
 
@@ -72,7 +91,7 @@ class HashTable(object):
                 self.put(tmpKeys[i], tmpVals[i])
 
     def get(self, key):
-        """ returns the value associated with the key """
+        """ returns the value associate with the key """
         hash = self.get_hash(key)
         index = -1
 
@@ -85,13 +104,13 @@ class HashTable(object):
         return None
 
     def delete(self,key):
-        """ Deletes this entry based on i.d./key"""
+        """ Deletes this entry based on i.d. key"""
         if not self.contains(key):
             return False
         
         index = self.get_hash(key)
         while not key == self.keys[index]:
-            index = (index + 1) % self.capacity # find the key, what's its index
+            index = (index + 1) % self.capacity  # find the key, what's its index
         self.valid[index] = False
 
         index = (index + 1) % self.capacity
@@ -106,14 +125,14 @@ class HashTable(object):
             self.put(key_redo, val_redo)
             index = (index + 1) % self.capacity
         
-        self.items -= 1 # delete the final one.
+        self.items -= 1  # delete the final one.
         return True
     
     def size(self):
         return self.items
-    
+
     def contains(self, key):
-        """ Does this key exist in the hashtable? """
+        """ Does key exist in this hashtable? """
         hash = self.get_hash(key)
         index = -1
 
